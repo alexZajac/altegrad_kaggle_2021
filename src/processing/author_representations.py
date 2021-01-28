@@ -18,6 +18,7 @@ for l in f:
         "]", "").replace("\n", "").replace("\'", "").replace("\"", "").split(",")]
     d[l.split(":")[0]] = auth_paps
 f.close()
+print("Authors papers written")
 
 # read the embeddings of each paper
 f = open(root / "paper_embeddings.txt", "r")
@@ -33,6 +34,7 @@ for l in f:
         s = s+" "+l.replace("\n", "")
 
 f.close()
+print("Embeddings finished")
 
 # the author representation is set to be the average of its papers' representations
 pattern = re.compile(r'(,){2,}')
@@ -52,3 +54,5 @@ for author in d:
         author+","+",".join(map(lambda x: "{:.8f}".format(round(x, 8)), v/c))+"\n")
 
 df.close()
+print("Author embeddings computed")
+

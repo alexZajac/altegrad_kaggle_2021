@@ -1,6 +1,4 @@
-# ALTEGRAD Kaggle Challenge - Predicting the h-index of
-
-Authors
+# ALTEGRAD Kaggle Challenge - Predicting the h-index of authors
 
 ## Description
 

@@ -20,6 +20,7 @@ stop_words = set(stopwords.words('english'))
 
 fw = open(root / "abstracts_processed.txt", "w")
 f = open(root / "abstracts.txt", "r")
+print("Read abstract.txt")
 
 # loads the inverted abstracts and stores them as id-abstracts in a dictionary dic and in a folder fw
 dim = 256
@@ -41,6 +42,7 @@ for l in f:
     fw.write(id+"----"+abstract+"\n")
     dic[id] = abstract
 fw.close()
+print("Processed abstracts.txt")
 
 # cleans the abstracts from stopwords, numeric and non legible characters
 doc = []
@@ -48,12 +50,14 @@ for i in dic:
     p = dic[i].split(",")
     dic[i] = [l for l in p if l.isalpha() and l not in stop_words]
     doc.append(dic[i])
+print("Abstracts cleaned")
 
 # learns the embeddings of each abstract
 tagged_data = [TaggedDocument(d, [i]) for i, d in enumerate(doc)]
 del doc
 model = Doc2Vec(tagged_data, vector_size=dim, window=5,
                 min_count=2, epochs=100, workers=10)
+print("Embedding learned")
 
 # store the embeddings in "paperID":array format
 f = open(root / "paper_embeddings.txt", "w")
@@ -62,3 +66,5 @@ for tid in dic:
     f.write(str(tid)+":"+np.array2string(model.infer_vector(sentence),
                                          formatter={'float_kind': lambda x: "%.8f" % x})+"\n")
 f.close()
+print("Paper embeddings finsihed")
+
