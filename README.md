@@ -13,7 +13,7 @@ given author has published h papers that have each been cited at least h times.
 
 ### Requirements
 
-At the root of the project, run `pip install -r requirements.txt`
+At the root of the project, run `pip install -r requirements.txt`.
 
 ### Data/Input
 
