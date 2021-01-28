@@ -7,7 +7,7 @@ a real-world regression problem. In this regression problem, each sample corresp
 (i. e., an author of research papers), and the goal is to build a model that can predict accurately the
 h-index of each author. More specifically, the h-index of an author measures his/her productivity and
 the citation impact of his/her publications. It is defined as the maximum value of h such that the
-given author has published h papers that have each been cited at least h times
+given author has published h papers that have each been cited at least h times.
 
 ## Get started
 
