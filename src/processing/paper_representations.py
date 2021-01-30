@@ -67,4 +67,3 @@ for tid in dic:
                                          formatter={'float_kind': lambda x: "%.8f" % x})+"\n")
 f.close()
 print("Paper embeddings finsihed")
-

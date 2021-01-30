@@ -2,6 +2,10 @@ import pandas as pd
 import numpy as np
 import networkx as nx
 from sklearn.linear_model import Lasso
+from sklearn.model_selection import train_test_split
+import xgboost as xgb
+from sklearn.metrics import mean_absolute_error
+from sklearn.preprocessing import StandardScaler
 from pathlib import Path
 
 root = Path("../../data/")
@@ -25,33 +29,59 @@ print('Number of nodes:', n_nodes)
 print('Number of edges:', n_edges)
 
 # computes structural features for each node
-core_number = nx.core_number(G)
+core_number = nx.core_number(G)  # dict that associates node -> core_number
+onion_number = nx.onion_layers(G)
 avg_neighbor_degree = nx.average_neighbor_degree(G)
+degree_centrality = nx.degree_centrality(G)
+clustering = nx.clustering(G)
 
 # create the training matrix. each node is represented as a vector of 3 features:
 # (1) its degree, (2) its core number and (3) the average degree of its neighbors
-X_train = np.zeros((n_train, 3))
-y_train = np.zeros(n_train)
+X_train_ = np.zeros((n_train, 6))
+y_train_ = np.zeros(n_train)
 for i, row in df_train.iterrows():
     node = row['authorID']
-    X_train[i, 0] = G.degree(node)
-    X_train[i, 1] = core_number[node]
-    X_train[i, 2] = avg_neighbor_degree[node]
-    y_train[i] = row['h_index']
+    X_train_[i, 0] = G.degree(node)
+    X_train_[i, 1] = core_number[node]
+    X_train_[i, 2] = avg_neighbor_degree[node]
+    X_train_[i, 3] = onion_number[node]
+    X_train_[i, 4] = degree_centrality[node]
+    X_train_[i, 5] = clustering[node]
+    y_train_[i] = row['h_index']
 
-# create the test matrix. each node is represented as a vector of 3 features:
-# (1) its degree, (2) its core number and (3) the average degree of its neighbors
-X_test = np.zeros((n_test, 3))
+X_test_ = np.zeros((n_test, 6))
 for i, row in df_test.iterrows():
     node = row['authorID']
-    X_test[i, 0] = G.degree(node)
-    X_test[i, 1] = core_number[node]
-    X_test[i, 2] = avg_neighbor_degree[node]
+    X_test_[i, 0] = G.degree(node)
+    X_test_[i, 1] = core_number[node]
+    X_test_[i, 2] = avg_neighbor_degree[node]
+    X_test_[i, 3] = onion_number[node]
+    X_test_[i, 4] = degree_centrality[node]
+    X_test_[i, 5] = clustering[node]
+
+scaler = StandardScaler()
+X_train_ = scaler.fit_transform(X_train_)
+X_test_ = scaler.fit_transform(X_test_)
+# create the test matrix. each node is represented as a vector of 3 features:
+# (1) its degree, (2) its core number and (3) the average degree of its neighbors
+# X_test = np.zeros((n_test, 3))
+# for i, row in df_test.iterrows():
+#     node = row['authorID']
+#     X_test[i, 0] = G.degree(node)
+#     X_test[i, 1] = core_number[node]
+#     X_test[i, 2] = avg_neighbor_degree[node]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_train_, y_train_, test_size=0.2, random_state=42
+)
 
 # train a regression model and make predictions
-reg = Lasso(alpha=0.1)
-reg.fit(X_train, y_train)
-y_pred = reg.predict(X_test)
+model = xgb.XGBRegressor()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print(f"Loss: {mean_absolute_error(y_test, y_pred)}")
+
+y_pred = model.predict(X_test_)
 
 # write the predictions to file
 output = Path('../../output')
