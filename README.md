@@ -27,4 +27,4 @@ All the code is found under the `code/` directory:
 
 - `baselines/` contains the baseline models for evaluating h-indices
 - `notebooks/` is containing all the major notebooks we have used to compute the author embeddings from abstracts with scibert, the Doc2Vec abstracts embeddings, the node embeddings strategies as well as the structural graph features. All the notebooks should be functional but were entirely run on google colab to avoid dependency issues and to gain GPU power.
-- `The final submission notebook is at the root of the code folder.
+- The final submission notebook is at the root of the code folder.
