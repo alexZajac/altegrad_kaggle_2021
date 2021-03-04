@@ -1,0 +1,8 @@
+pandas
+networkx
+matplotlib
+numpy
+nltk
+scikit_learn
+torch
+optuna
